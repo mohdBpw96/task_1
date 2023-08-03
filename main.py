@@ -63,16 +63,17 @@ async def register_user(
         profile_picture: Annotated[UploadFile, Form()]
     ):
 
-    # Check if the email already exists in PostgreSQL database
     print("Checking if the email already exists in the PostgreSQL database")
 
     pg_session = SessionLocal()
     user_object = pg_session.query(User).filter(User.email == email).first()
+
+    # Check if the email already exists in PostgreSQL database
     if user_object:
         print("User already registered")
         return {"message": "User Already Registered!", "code": False}
 
-    # Save user data to PostgreSQL
+    # Saving user data to PostgreSQL database
     print("Saving user data to PostgreSQL")
     new_user = User(
         full_name = full_name,
@@ -87,12 +88,11 @@ async def register_user(
 
     user_id = pg_session.query(User).filter(User.email == email).first().id
 
-    # Save profile picture to MongoDB
+    # Saving profile picture to MongoDB database
     print("Saving profile picture to MongoDB")
     profile_data = {'user_id': user_id, "email": email, "profile_picture": profile_picture.file.read()}
     mongo_collection.insert_one(profile_data)
     print("Profile picture saved to MongoDB")
-
 
     return {"message": "User Registered Successfully!", "code": True}
 
