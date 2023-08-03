@@ -4,6 +4,7 @@ from typing_extensions import Annotated
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, Column, String, Integer
+from werkzeug.security import generate_password_hash
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from pymongo import MongoClient
@@ -27,13 +28,13 @@ pg_engine = create_engine('postgresql://postgres:mohammed123@localhost:5432/xpay
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=pg_engine)
 Base = declarative_base()
 
-# MongoDB configuration
+# MongoDB database configuration
 mongo_client = MongoClient('mongodb://localhost:27017')
 mongo_db = mongo_client['xpayback_task']
 mongo_collection = mongo_db['profiles']
 
 
-# PostgreSQL user model
+# PostgreSQL database user table model
 class User(Base):
     __tablename__ = 'users'
 
@@ -41,7 +42,7 @@ class User(Base):
     full_name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-    phone = Column(String)
+    phone = Column(String, unique=True)
 
     class Config:
         orm_mode = True 
@@ -76,7 +77,7 @@ async def register_user(
     new_user = User(
         full_name = full_name,
         email = email,
-        password = password,
+        password = generate_password_hash(password, method='scrypt'),
         phone = phone
     )
     pg_session.add(new_user)
