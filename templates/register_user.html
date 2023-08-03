@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #message {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Registration</h1>
+        <form id="registrationForm" method="post" enctype="multipart/form-data">
+            <label for="full_name">Full Name:</label>
+            <input name="full_name" type="text" id="full_name" required>
+
+            <label for="email">Email:</label>
+            <input name="email" type="email" id="email" required>
+
+            <label for="password">Password:</label>
+            <input name="password" type="password" id="password" required>
+
+            <label for="phone">Phone:</label>
+            <input name="phone" type="text" id="phone" required>
+
+            <label for="profile_picture">Profile Picture:</label>
+            <input name="profile_picture" type="file" id="profile_picture" accept="image/*">
+
+            <button type="submit">Register</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const registrationForm = document.getElementById('registrationForm');
+        const messageElement = document.getElementById('message');
+
+        registrationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(registrationForm);
+
+            fetch('http://127.0.0.1:8000/register', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.code) {
+                    messageElement.style.color = "red";
+                } 
+                messageElement.textContent = data.message;
+                registrationForm.reset();
+            })
+            .catch(error => {
+                messageElement.style.color = 'red';
+                messageElement.textContent = 'Error occurred during registration';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

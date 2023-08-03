@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-details {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .user-details p {
+            margin: 10px 0;
+        }
+
+        .user-details strong {
+            font-weight: bold;
+        }
+
+        .profile-picture img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h2>Enter the email address of the user you want to get the data of</h2>
+        <form action="http://127.0.0.1:8000/registered-user-details" method="get">
+            <label for="email">Email: </label>
+            <input type="email" name="email" id="email_input">
+            <input type="submit" value="Get Details">
+        </form>
+        
+        
+        {% if name %}
+            <h1>User Details</h1>
+            <div class="user-details">
+                <p><strong>Name:</strong> <span id="name">{{name}}</span></p>
+                <p><strong>Email:</strong> <span id="email">{{email}}</span></p>
+                <p><strong>Phone:</strong> <span id="phone">{{phone}}</span></p>
+                <!-- <p><strong>profile_picture:</strong> <span id="profile_picture">{{profile_picture}}</span></p> -->
+                <p><strong>Profile Picture:</strong></p>
+                <div class="profile-picture">
+                    <img id="profile_picture" src="data:image/jpeg;base64,{{profile_picture}}" alt="Profile Picture">
+                </div>
+            </div>
+        {% endif %}
+        {% if not_found_message %}
+            <h3 style="color: red;" >{{not_found_message}}</h3>
+        {% endif %}
+    </div>
+
+</body>
+</html>
